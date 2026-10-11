@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from componentes import mostrar_alerta
-from conexion import base_datos as BaseDeDatos
+from conexion import BaseDeDatos
 
 class RegistroWindow(ctk.CTk):
     def __init__(self):

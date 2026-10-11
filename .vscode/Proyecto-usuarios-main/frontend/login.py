@@ -1,7 +1,7 @@
 import customtkinter as ctk # Esta es la libreria que estoy usando para diseñar y crear pantallas
 # Estas librerias son mas orientadas a POO por eso se crean clases y métodos
 from componentes import mostrar_alerta        
-from conexion import base_datos as BaseDeDatos
+from conexion import BaseDeDatos
 from registro import RegistroWindow            
 
 class LoginWindow(ctk.CTk):

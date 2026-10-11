@@ -1,6 +1,6 @@
 import mysql.connector as mysql_connector # este seria el paquete que utilizamos para hacer la conexion de mysql a python
 
-class base_datos:
+class BaseDeDatos:
     def conectar(self): #Agregamos una clase donde va a venir toda la conexion hacia la base de datos 
         try:
             conexion = mysql_connector.connect(
