@@ -121,11 +121,18 @@ class LoginWindow(ctk.CTk):
         if not usuario or not contraseña:
             mostrar_alerta(self, "SECURITY BREACH", "¡Error! All fields are required.")
             return
-        Ingreso_exitoso = self.db.verficar_login(usuario, contraseña)
-        if Ingreso_exitoso:
-            mostrar_alerta(self, "ACCESS GRANTED", "Welcome to Fazbear Entertainment!")
+
+        rol_usuario = self.db.verficar_login(usuario, contraseña)
+
+        if rol_usuario:
+            from Mostrar import DashboardWindow
+            self.destroy()
+            dashboard = DashboardWindow(rol_usuario)
+            dashboard.mainloop()
         else:
             mostrar_alerta(self, "ACCESS DENIED", "¡Error! Invalid username or password.")
+
+
     def abrir_registro(self):
         self.destroy()
         register_window = RegistroWindow()

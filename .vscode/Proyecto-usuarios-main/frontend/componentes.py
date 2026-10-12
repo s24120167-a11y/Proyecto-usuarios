@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-def mostrar_alerta(parent, titulo, mensaje):
+def mostrar_alerta(parent, titulo, mensaje, comando_ok = None):
         # Ventana emergente personalizada
         popup = ctk.CTkToplevel(parent)
         popup.title(titulo)
@@ -17,6 +17,11 @@ def mostrar_alerta(parent, titulo, mensaje):
         x = parent.winfo_x() + (parent.winfo_width() - 380) // 2
         y = parent.winfo_y() + (parent.winfo_height() - 180) // 2
         popup.geometry(f"+{x}+{y}")
+
+        def cerrar_y_opcional():
+            popup.destroy()
+            if comando_ok is not None:
+                comando_ok()
 
         # Título de la alerta 
         lbl_titulo = ctk.CTkLabel(
@@ -49,6 +54,6 @@ def mostrar_alerta(parent, titulo, mensaje):
             border_width=1,
             text_color="#FFFFFF",
             font=("Courier New", 12, "bold"),
-            command=popup.destroy
+            command= cerrar_y_opcional
         )
         btn_ok.pack(pady=(15, 20))

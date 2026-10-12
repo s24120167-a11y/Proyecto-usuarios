@@ -2,6 +2,7 @@ import customtkinter as ctk
 from componentes import mostrar_alerta
 from conexion import BaseDeDatos
 
+
 class RegistroWindow(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -115,6 +116,12 @@ class RegistroWindow(ctk.CTk):
         self.entry_password = ctk.CTkEntry(self.scroll_frame, width=460, height=32, fg_color="#1A1A1A", text_color="#FFFFFF", font=("Courier New", 11), show="*")
         self.entry_password.pack(padx=20)
 
+         # Confirm Password
+        self.lbl_Cpassword = ctk.CTkLabel(self.scroll_frame, text="Confirm Password:", font=("Courier New", 11, "bold"), text_color="#FF1E3B")
+        self.lbl_Cpassword.pack(anchor="w", padx=20, pady=(10, 2))
+        self.entry_Cpassword = ctk.CTkEntry(self.scroll_frame, width=460, height=32, fg_color="#1A1A1A", text_color="#FFFFFF", font=("Courier New", 11), show="*")
+        self.entry_Cpassword.pack(padx=20)
+
         # Rol
         self.lbl_rol = ctk.CTkLabel(self.scroll_frame, text="System Rol:", font=("Courier New", 11, "bold"), text_color="#CCCCCC")
         self.lbl_rol.pack(anchor="w", padx=20, pady=(10, 2))
@@ -122,11 +129,14 @@ class RegistroWindow(ctk.CTk):
         self.combo_rol.pack(padx=20)
         self.combo_rol.set("Empleado")
 
+        frame_botones = ctk.CTkFrame(self, fg_color="transparent")
+        frame_botones.pack(pady=15)
+
         # Boton de registro 
         self.btn_registrar = ctk.CTkButton(
-            self, 
+            frame_botones, 
             text="REGISTER GUARD", 
-            width=260, 
+            width=180, 
             height=40, 
             fg_color="#1A1A1A", 
             hover_color="#333333",
@@ -136,8 +146,31 @@ class RegistroWindow(ctk.CTk):
             border_width=1,
             command=self.validar_registro
         )
-        self.btn_registrar.pack(pady=15)
+        self.btn_registrar.pack(side="left", padx=10) 
+
+        # Boton de regreso 
+        self.btn_regreso = ctk.CTkButton(
+            frame_botones, 
+            text="LOG OUT", 
+            width=180, 
+            height=40, 
+            fg_color="#1A1A1A", 
+            hover_color="#333333",
+            text_color="#FFFFFF", 
+            font=("Courier New", 14, "bold"),
+            border_color="#555555",
+            border_width=1,
+            command=self.regreso
+        )
+        self.btn_regreso.pack(side="left", padx=10)
     
+    def regreso(self):
+        from login import LoginWindow
+        self.destroy()
+        back = LoginWindow()
+        back.mainloop()
+
+
     def validar_registro(self):
         
         nombre = self.entry_nombre.get().strip()
@@ -145,6 +178,7 @@ class RegistroWindow(ctk.CTk):
         correo = self.entry_correo.get().strip()
         usuario = self.entry_usuario.get().strip()
         password = self.entry_password.get().strip()
+        cpassword = self.entry_Cpassword.get().strip()
         rol = self.combo_rol.get()
         telefono = self.entry_telefono.get().strip()
         curp = self.entry_curp.get().strip()
@@ -154,9 +188,14 @@ class RegistroWindow(ctk.CTk):
         cp = self.entry_cp.get().strip()
         
         # Validación 1: Todos lo campos deben estar llenos
-        if not all([nombre, apellidos, correo, usuario, password, telefono, curp, nss, rfc, direccion, cp]):
+        if not all([nombre, apellidos, correo, usuario, password, cpassword, telefono, curp, nss, rfc, direccion, cp]):
             mostrar_alerta(self, "SECURITY BREACH", "¡Error! All fields are required.")
             return
+        # Validacion de confirmacion de contraseña
+        if password != cpassword:
+            mostrar_alerta(self, "VALIDATION ERROR", "The passwords must match.")
+            return
+
         # Validación 2: Longitudes exactas
         if len(curp) != 18:
             mostrar_alerta(self, "VALIDATION ERROR", "The CURP must have exactly 18 characters.")
@@ -173,17 +212,17 @@ class RegistroWindow(ctk.CTk):
         if len(cp) != 5:
             mostrar_alerta(self, "VALIDATION ERROR", "The zip Code must have 5 digits.")
             return
-        
-        mostrar_alerta(self, "SUCCESS", f"Guardia {usuario} successfully validated.")
 
         datos_usuario = (nombre, apellidos, correo, telefono, direccion, cp, curp, nss, rfc, usuario, password, rol)
         successful = self.db.ingresar_usuario(*datos_usuario)
         if successful:
-            mostrar_alerta(self, "SUCCESS", f"Guardia {usuario} successfully registered in the database.")
+            mostrar_alerta(
+                self, 
+                "SUCCESS", 
+                f"Guardia {usuario} successfully registered in the database.", 
+                comando_ok =self.regreso)
         else:
             mostrar_alerta(self, "DATABASE ERROR", "Failed to register the guard in the database.")
 
-if __name__ == "__main__":
-    app = RegistroWindow()
-    app.mainloop()
+
     
